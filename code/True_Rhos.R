@@ -25,14 +25,13 @@ invisible(lapply(list.files(here("code/functions"), pattern = "\\.R$", full.name
 # Parameter Speicification ------------------------------------------------
 MC <- 1000
 Ti <- 1000
-alphas_PowerGraph <- round(head(seq(-1, 1, 0.01), -1)[-1], digits = 2) # get rid of the first (-1) and last (1) element of the alpha-vector
 alphas_CIs <- c(sort(-log10(seq(1,9.9999,0.0999))[-1]), log10(seq(1,9.9999,0.0999)))
-alphas_fileendings <- c("", "_CIs", "_CIs_short")
+alphas_fileendings <- c("_CIs", "_CIs_short")
 
 # Continuous IID Processes -------------------------------------------------
 ## "Multivariate t4" DGP (iid) -------------------------------------------------
 alphas_CIs_short <- c(-0.835, -0.4, 0, 0.4, 0.835)
-alphas_list <- list(alphas_PowerGraph, alphas_CIs, alphas_CIs_short)
+alphas_list <- list(alphas_CIs, alphas_CIs_short)
 
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)
@@ -53,7 +52,7 @@ stopCluster(cl)
 
 ## "Multivariate t1" DGP (iid) -------------------------------------------------
 alphas_CIs_short <- c(-0.92, -0.31, 0, 0.31, 0.92)
-alphas_list <- list(alphas_PowerGraph, alphas_CIs, alphas_CIs_short)
+alphas_list <- list(alphas_CIs, alphas_CIs_short)
 
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)
@@ -74,7 +73,7 @@ stopCluster(cl)
 
 ## Normal Exponential DGP (iid) -------------------------------------------------
 alphas_CIs_short <- c(-0.81, -0.42, 0, 0.42, 0.81)
-alphas_list <- list(alphas_PowerGraph, alphas_CIs, alphas_CIs_short)
+alphas_list <- list(alphas_CIs, alphas_CIs_short)
 
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)
@@ -138,7 +137,7 @@ stopCluster(cl)
 
 ## "Multivariate Skellam" DGP (iid) -------------------------------------------------
 alphas_CIs_short <- c(-0.728, -0.365, 0, 0.365, 0.728)
-alphas_list <- list(alphas_PowerGraph, alphas_CIs, alphas_CIs_short)
+alphas_list <- list(alphas_CIs, alphas_CIs_short)
 
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)
@@ -159,7 +158,7 @@ for (j in seq_along(alphas_list)){
 # Continuous Time Series Processes -------------------------------------------------
 ## "Multivariate Normal" DGP (Time Series) -------------------------------------------------
 alphas_CIs_short <- c(-0.815, -0.42, 0, 0.42, 0.815)
-alphas_list <- list(alphas_PowerGraph, alphas_CIs, alphas_CIs_short)
+alphas_list <- list(alphas_CIs, alphas_CIs_short)
 
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)
@@ -180,7 +179,7 @@ stopCluster(cl)
 
 # "Multivariate t(4)" DGP (Time Series) -------------------------------------------------
 alphas_CIs_short <- c(-0.82, -0.41, 0, 0.41, 0.82)
-alphas_list <- list(alphas_PowerGraph, alphas_CIs, alphas_CIs_short)
+alphas_list <- list(alphas_CIs, alphas_CIs_short)
 
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)
@@ -201,7 +200,7 @@ stopCluster(cl)
 
 # "Multivariate t(1)" DGP (Time Series) -------------------------------------------------
 alphas_CIs_short <- c(-0.915, -0.305, 0, 0.305, 0.915)
-alphas_list <- list(alphas_PowerGraph, alphas_CIs, alphas_CIs_short)
+alphas_list <- list(alphas_CIs, alphas_CIs_short)
 
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)
@@ -286,7 +285,7 @@ stopCluster(cl)
 
 # "Multivariate Skellam" DGP (Time Series) -------------------------------------------------
 alphas_CIs_short <- c(-0.745, -0.37, 0, 0.37, 0.745)
-alphas_list <- list(alphas_PowerGraph, alphas_CIs, alphas_CIs_short)
+alphas_list <- list(alphas_CIs, alphas_CIs_short)
 
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)

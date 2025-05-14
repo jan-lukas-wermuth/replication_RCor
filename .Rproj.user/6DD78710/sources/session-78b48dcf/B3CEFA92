@@ -1,18 +1,18 @@
 {
-    "id": "162A19C3",
+    "id": "B3CEFA92",
     "path": "~/Documents/Dr.Wermuth/Projects/RankAutocorrelations/replication_RCor/code/CIs_Coverage_Kendall.R",
     "project_path": "code/CIs_Coverage_Kendall.R",
     "type": "r_source",
     "hash": "0",
     "contents": "",
     "dirty": false,
-    "created": 1747051797751.0,
+    "created": 1747223691213.0,
     "source_on_save": false,
-    "relative_order": 1,
+    "relative_order": 4,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "22,0",
+        "cursorPosition": "14,0",
         "scrollLine": "0"
     },
     "folds": "",
@@ -20,7 +20,7 @@
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1747061585824,
+    "last_content_update": 1747061585,
     "read_only": false,
     "read_only_alternatives": []
 }
