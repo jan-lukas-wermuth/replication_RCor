@@ -1,26 +1,26 @@
 {
-    "id": "3AF8B7E7",
-    "path": "~/Library/CloudStorage/Dropbox/Pohle Wermuth/NominalCorrelation/replication_NCor/README.Rmd",
+    "id": "F0EA1BB0",
+    "path": "~/Documents/Dr.Wermuth/Rpackages/RCor/README.Rmd",
     "project_path": null,
     "type": "r_markdown",
-    "hash": "0",
+    "hash": "3626635228",
     "contents": "",
     "dirty": false,
-    "created": 1747226893469.0,
+    "created": 1747227113120.0,
     "source_on_save": false,
-    "relative_order": 5,
+    "relative_order": 6,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "4,0",
-        "scrollLine": "0"
+        "cursorPosition": "57,11",
+        "scrollLine": "50"
     },
     "folds": "",
-    "lastKnownWriteTime": 1747226905,
+    "lastKnownWriteTime": 1747230357,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1747226905606,
+    "last_content_update": 1747230357334,
     "read_only": false,
     "read_only_alternatives": []
 }
