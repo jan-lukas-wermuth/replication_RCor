@@ -1,0 +1,223 @@
+
+################################# Plots: Simulations #########################################
+rm(list = ls())
+
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(Cairo)
+library(abind)
+
+#### Step 1: IID processes (independence across elements within each process) -- Proposition 14
+
+alpha <- 0.9
+DGPs <- c("Normal", "Zipf1", "Cauchy")
+SampleSizes <- c("50", "200", "800")
+rhos <- c(sort(-log10(seq(1,9.9999,0.0999))[-1]), log10(seq(1,9.9999,0.0999)))[2:180]
+
+load(file = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/2Series_CIs/Kendall_coverage_norm_t4_t1.RData")
+load(file = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/2Series_CIs/Gamma_coverage_zipf.RData")
+load(file = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/2Series_CIs/Rhob_coverage_zipf.RData")
+load(file = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/2Series_CIs/Spearman_coverage_norm_fis.RData")
+load(file = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/2Series_CIs/Spearman_coverage_norm.RData")
+load(file = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/2Series_CIs/Spearman_coverage_t1_fis.RData")
+load(file = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/2Series_CIs/Spearman_coverage_t1.RData")
+load(file = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/taus_t1_CIs.RData")
+load(file = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/rhos_t1_CIs.RData")
+load(file = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/gammas_Zipf1_CIs.RData")
+load(file = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/rhobs_Zipf1_CIs.RData")
+
+# Merge Spearman arrays 
+decision_spearman_array <- abind(decision_spearman_array_norm, decision_spearman_array_norm_fis, decision_spearman_array_t1, decision_spearman_array_t1_fis, along = 0, new.names = c("Normal", "Normal_Fis", "Cauchy", "Cauchy_Fis"))
+
+decision_spearman_array <- decision_spearman_array[,,,2:180]
+decision_kendall_array <- decision_kendall_array[,,,2:180]
+decision_gamma_array <- decision_gamma_array[,,,1:90]
+decision_rhob_array <- decision_rhob_array[,,,1:90]
+
+dimnames(decision_kendall_array)[[1]] <- c("Normal", "t4", "Cauchy", "Normal_Fis", "t4_Fis", "Cauchy_Fis")
+
+# Prepare datasets for plotting
+for (DGP in DGPs){
+  for (Ti in SampleSizes) {
+    if (DGP == "Normal") {
+      assign(paste("data", DGP, Ti, sep = "_"), data.frame(cbind(t(rbind(2/pi*asin(rhos), 6/pi*asin(rhos/2), colMeans(decision_kendall_array[DGP, Ti,,]), colMeans(decision_kendall_array[paste(DGP, "Fis", sep = "_"), Ti,,]), colMeans(decision_spearman_array[DGP, Ti,,]), colMeans(decision_spearman_array[paste(DGP, "Fis", sep = "_"), Ti,,]))), DGP, Ti)))
+      data.table::setnames(get(paste("data", DGP, Ti, sep = "_")), c("gamma", "rhob", "Kendall_Coverage", "Kendall_Coverage_Fis", "Spearman_Coverage", "Spearman_Coverage_Fis", "DGP", "Ti"))
+    }
+    if (DGP == "Zipf1") {
+      assign(paste("data", DGP, Ti, sep = "_"), data.frame(cbind(t(rbind(gammas_Zipf1[1:90], rhobs_Zipf1[1:90], colMeans(decision_gamma_array[DGP, Ti,,]), colMeans(decision_gamma_array[paste(DGP, "Fis", sep = "_"), Ti,,]), colMeans(decision_rhob_array[DGP, Ti,,]), colMeans(decision_rhob_array[paste(DGP, "Fis", sep = "_"), Ti,,]))), DGP, Ti)))
+      data.table::setnames(get(paste("data", DGP, Ti, sep = "_")), c("gamma", "rhob", "Kendall_Coverage", "Kendall_Coverage_Fis", "Spearman_Coverage", "Spearman_Coverage_Fis", "DGP", "Ti"))
+    }
+    if (DGP == "Cauchy") {
+      assign(paste("data", DGP, Ti, sep = "_"), data.frame(cbind(t(rbind(taus_t1[2:180], rhos_t1[2:180], colMeans(decision_kendall_array[DGP, Ti,,]), colMeans(decision_kendall_array[paste(DGP, "Fis", sep = "_"), Ti,,]), colMeans(decision_spearman_array[DGP, Ti,,]), colMeans(decision_spearman_array[paste(DGP, "Fis", sep = "_"), Ti,,]))), DGP, Ti)))
+      data.table::setnames(get(paste("data", DGP, Ti, sep = "_")), c("gamma", "rhob", "Kendall_Coverage", "Kendall_Coverage_Fis", "Spearman_Coverage", "Spearman_Coverage_Fis", "DGP", "Ti"))
+    }
+  }
+}
+
+# Merge to one big dataset
+dataset <- rbind(data_Normal_50, data_Normal_200, data_Normal_800, data_Cauchy_50, data_Cauchy_200, data_Cauchy_800, data_Zipf1_50, data_Zipf1_200, data_Zipf1_800)
+dataset <- dataset %>% mutate(DGP = if_else(DGP == "Zipf1", "Zipf", DGP))
+dataset$Ti <- factor(dataset$Ti, levels = c(50, 200, 800))
+dataset$DGP <- factor(dataset$DGP, levels = c("Cauchy", "Normal", "Zipf"))
+class(dataset$Kendall_Coverage) <- "numeric"
+class(dataset$Kendall_Coverage_Fis) <- "numeric"
+class(dataset$Spearman_Coverage) <- "numeric"
+class(dataset$Spearman_Coverage_Fis) <- "numeric"
+class(dataset$gamma) <- "numeric"
+class(dataset$rhob) <- "numeric"
+dataset_kendall <- pivot_longer(dataset, cols = c("Kendall_Coverage", "Kendall_Coverage_Fis"), names_to = "CI")
+dataset_kendall <- dataset_kendall %>% mutate(CI = if_else(CI == "Kendall_Coverage_Fis", "with Fisher transformation", "without Fisher transformation"))
+dataset_spearman <- pivot_longer(dataset, cols = c("Spearman_Coverage", "Spearman_Coverage_Fis"), names_to = "CI")
+dataset_spearman <- dataset_spearman %>% mutate(CI = if_else(CI == "Spearman_Coverage_Fis", "with Fisher transformation", "without Fisher transformation"))
+
+# Specify basic determinants for the plots
+size <- 10
+linewidth <- 0.2
+
+options(ggplot2.discrete.colour= c("blue", "red")) # Specify colors for the lines in the plots
+
+n_names <- c(`50` = "T = 50",
+             `200` = "T = 200",
+             `800` = "T = 800")
+
+fin_plot_kendall <- ggplot2::ggplot(data = dataset_kendall) +
+  geom_line(mapping = aes(y = value, x = gamma, color = CI)) +
+  geom_hline(yintercept=c(alpha), col="black") +
+  facet_grid(cols = vars(DGP), rows = vars(Ti), labeller = labeller(Ti=n_names)) +
+  theme_bw(base_size = size) + ylim(c(0,1)) + xlim(c(-0.98, 0.98)) +
+  theme(axis.ticks = element_line(color = "black"), legend.position = "bottom")
+
+ggsave(filename = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Plots/CoverageGammaIID_CauchyNormZipf.pdf", plot = fin_plot_kendall, device = cairo_pdf, width = 15, height = 15, units = "cm")
+
+fin_plot_spearman <- ggplot2::ggplot(data = dataset_spearman) +
+  geom_line(mapping = aes(y = value, x = rhob, color = CI)) +
+  geom_hline(yintercept=c(alpha), col="black") +
+  facet_grid(cols = vars(DGP), rows = vars(Ti), labeller = labeller(Ti=n_names)) +
+  theme_bw(base_size = size) + ylim(c(0,1)) + xlim(c(-0.98, 0.98)) +
+  theme(axis.ticks = element_line(color = "black"), legend.position = "bottom")
+
+ggsave(filename = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Plots/CoverageRhobIID_CauchyNormZipf.pdf", plot = fin_plot_spearman, device = cairo_pdf, width = 15, height = 15, units = "cm")
+
+#### Step 2: TS processes -- Proposition 19
+rm(list = ls())
+
+DGPs <- c("Norm", "Zipf", "Cauchy")
+SampleSizes <- c("50", "200", "800")
+alpha <- 0.9
+
+load("/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/2Series_CIs/Kendall_norm_TS_graph.RData")
+decision_kendall_array_TS_norm <- decision_kendall_array[,,,2:180]
+load("/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/2Series_CIs/Kendall_t1_TS_graph.RData")
+decision_kendall_array_TS_t1 <- decision_kendall_array[,,,2:180]
+load(file = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/2Series_CIs/Gamma_zipf_TS_graph/decision_gamma_array_combined.RData")
+decision_gamma_array_TS_zipf <- decision_gamma_array_combined[,,,1:90]
+load(file = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/taus_TS_norm_CIs.RData")
+load(file = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/taus_TS_t1_CIs.RData")
+load(file = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/gammas_TS_Zipf_CIs.RData")
+
+# Prepare datasets for plotting
+for (DGP in DGPs){
+  for (Ti in SampleSizes) {
+    if (DGP == "Norm") {
+      assign(paste("data", DGP, Ti, sep = "_"), data.frame(cbind(t(rbind(taus_TS_norm[2:180], colMeans(decision_kendall_array_TS_norm[DGP, Ti,,]), colMeans(decision_kendall_array_TS_norm[paste(DGP, "Fis", sep = "_"), Ti,,]))), "Normal", Ti)))
+      data.table::setnames(get(paste("data", DGP, Ti, sep = "_")), c("gamma", "Kendall_Coverage", "Kendall_Coverage_Fis", "DGP", "Ti"))
+    }
+    if (DGP == "Zipf") {
+      assign(paste("data", DGP, Ti, sep = "_"), data.frame(cbind(t(rbind(gammas_TS_Zipf[1:90], colMeans(decision_gamma_array_TS_zipf[paste(DGP, "TS", sep = "_"), Ti,,]), colMeans(decision_gamma_array_TS_zipf[paste(DGP, "TS_Fis", sep = "_"), Ti,,]))), DGP, Ti)))
+      data.table::setnames(get(paste("data", DGP, Ti, sep = "_")), c("gamma", "Kendall_Coverage", "Kendall_Coverage_Fis", "DGP", "Ti"))
+    }
+    if (DGP == "Cauchy") {
+      assign(paste("data", DGP, Ti, sep = "_"), data.frame(cbind(t(rbind(taus_TS_t1[2:180], colMeans(decision_kendall_array_TS_t1[DGP, Ti,,]), colMeans(decision_kendall_array_TS_t1[paste(DGP, "Fis", sep = "_"), Ti,,]))), DGP, Ti)))
+      data.table::setnames(get(paste("data", DGP, Ti, sep = "_")), c("gamma", "Kendall_Coverage", "Kendall_Coverage_Fis", "DGP", "Ti"))
+    }
+  }
+}
+
+# Merge to one big dataset
+dataset <- rbind(data_Norm_50, data_Norm_200, data_Norm_800, data_Cauchy_50, data_Cauchy_200, data_Cauchy_800, data_Zipf_50, data_Zipf_200, data_Zipf_800)
+dataset$Ti <- factor(dataset$Ti, levels = c(50, 200, 800))
+dataset$DGP <- factor(dataset$DGP, levels = c("Cauchy", "Normal", "Zipf"))
+class(dataset$Kendall_Coverage) <- "numeric"
+class(dataset$Kendall_Coverage_Fis) <- "numeric"
+class(dataset$gamma) <- "numeric"
+dataset_kendall <- pivot_longer(dataset, cols = c("Kendall_Coverage", "Kendall_Coverage_Fis"), names_to = "CI")
+dataset_kendall <- dataset_kendall %>% mutate(CI = if_else(CI == "Kendall_Coverage_Fis", "with Fisher transformation", "without Fisher transformation"))
+
+# Specify basic determinants for the plots
+size <- 10
+linewidth <- 0.2
+
+options(ggplot2.discrete.colour= c("blue", "red")) # Specify colors for the lines in the plots
+
+n_names <- c(`50` = "T = 50",
+             `200` = "T = 200",
+             `800` = "T = 800")
+
+fin_plot_kendall <- ggplot2::ggplot(data = dataset_kendall) +
+  geom_line(mapping = aes(y = value, x = gamma, color = CI)) +
+  geom_hline(yintercept=c(alpha), col="black") +
+  facet_grid(cols = vars(DGP), rows = vars(Ti), labeller = labeller(Ti=n_names)) +
+  theme_bw(base_size = size) + ylim(c(0,1)) + xlim(c(-0.98, 0.98)) +
+  theme(axis.ticks = element_line(color = "black"), legend.position = "bottom")
+
+ggsave(filename = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Plots/CoverageKendallTS_CauchyNormZipf.pdf", plot = fin_plot_kendall, device = cairo_pdf, width = 15, height = 15, units = "cm")
+
+# Graphic for poster: only Cauchy and Zipf
+rm(list = ls())
+
+DGPs <- c("Cauchy", "Zipf")
+SampleSizes <- c("50", "200", "800")
+alpha <- 0.9
+
+load("/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/2Series_CIs/Kendall_t1_TS_graph.RData")
+decision_kendall_array_TS_t1 <- decision_kendall_array[,,,2:180]
+load(file = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/2Series_CIs/Gamma_zipf_TS_graph/decision_gamma_array_combined.RData")
+decision_gamma_array_TS_zipf <- decision_gamma_array_combined[,,,1:90]
+load(file = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/taus_TS_t1_CIs.RData")
+load(file = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Simulations/gammas_TS_Zipf_CIs.RData")
+
+# Prepare datasets for plotting
+for (DGP in DGPs){
+  for (Ti in SampleSizes) {
+    if (DGP == "Zipf") {
+      assign(paste("data", DGP, Ti, sep = "_"), data.frame(cbind(t(rbind(gammas_TS_Zipf[1:90], colMeans(decision_gamma_array_TS_zipf[paste(DGP, "TS", sep = "_"), Ti,,]), colMeans(decision_gamma_array_TS_zipf[paste(DGP, "TS_Fis", sep = "_"), Ti,,]))), DGP, Ti)))
+      data.table::setnames(get(paste("data", DGP, Ti, sep = "_")), c("gamma", "Kendall_Coverage", "Kendall_Coverage_Fis", "DGP", "Ti"))
+    }
+    if (DGP == "Cauchy") {
+      assign(paste("data", DGP, Ti, sep = "_"), data.frame(cbind(t(rbind(taus_TS_t1[2:180], colMeans(decision_kendall_array_TS_t1[DGP, Ti,,]), colMeans(decision_kendall_array_TS_t1[paste(DGP, "Fis", sep = "_"), Ti,,]))), DGP, Ti)))
+      data.table::setnames(get(paste("data", DGP, Ti, sep = "_")), c("gamma", "Kendall_Coverage", "Kendall_Coverage_Fis", "DGP", "Ti"))
+    }
+  }
+}
+
+# Merge to one big dataset
+dataset <- rbind(data_Cauchy_50, data_Cauchy_200, data_Cauchy_800, data_Zipf_50, data_Zipf_200, data_Zipf_800)
+dataset$Ti <- factor(dataset$Ti, levels = c(50, 200, 800))
+dataset$DGP <- factor(dataset$DGP, levels = c("Cauchy", "Zipf"))
+class(dataset$Kendall_Coverage) <- "numeric"
+class(dataset$Kendall_Coverage_Fis) <- "numeric"
+class(dataset$gamma) <- "numeric"
+dataset_kendall <- pivot_longer(dataset, cols = c("Kendall_Coverage", "Kendall_Coverage_Fis"), names_to = "CI")
+dataset_kendall <- dataset_kendall %>% mutate(CI = if_else(CI == "Kendall_Coverage_Fis", "with Fisher transformation", "without Fisher transformation"))
+
+# Specify basic determinants for the plots
+size <- 10
+linewidth <- 0.2
+
+options(ggplot2.discrete.colour= c("blue", "red")) # Specify colors for the lines in the plots
+
+n_names <- c(`50` = "T = 50",
+             `200` = "T = 200",
+             `800` = "T = 800")
+
+fin_plot_kendall <- ggplot2::ggplot(data = dataset_kendall) +
+  geom_line(mapping = aes(y = value, x = gamma, color = CI)) +
+  geom_hline(yintercept=c(alpha), col="black") +
+  facet_grid(cols = vars(DGP), rows = vars(Ti), labeller = labeller(Ti=n_names)) +
+  theme_bw(base_size = size) + ylim(c(0,1)) + xlim(c(-0.98, 0.98)) +
+  theme(axis.ticks = element_line(color = "black"), legend.position = "bottom")
+
+ggsave(filename = "/Users/lukaswermuth/Documents/Dr.Wermuth/Projects/RankAutocorrelations/Results/Plots/CoverageKendallTS_CauchyZipf.pdf", plot = fin_plot_kendall, device = cairo_pdf, width = 10, height = 15, units = "cm")
+
+

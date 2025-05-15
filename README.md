@@ -60,6 +60,9 @@ in the folder.
   values for all the independence tests in the paper. It uses the same
   DGPs as above.
 
+- Coverage_plots.R: This file uses the raw empirical coverage rates and
+  produces plots.
+
 - Applications.R: This file contains the data for both applications. It
   also includes the computation of all relevant correlation coefficients
   together with their confidence intervals and p-values for the
