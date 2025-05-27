@@ -27,6 +27,7 @@ coefficients_disc <- c("r", "tau", "tau_b", "gamma", "rho_b")
 
 # Continuous IID Processes ------------------------------------------------
 ## Multivariate normal DGP ------------------------------------------------
+# alphas_Test <- seq(from = -0.99, to = 0.99, by = 0.01)
 alphas_Test_short <- c(-0.16, -0.08, 0, 0.08, 0.16)
 pval_array_norm_iid <- array(data = NA, dim = c(length(coefficients_cont), length(SampleSizes), MC, length(alphas_Test_short)), dimnames = list(coefficients_cont, SampleSizes, 1:MC, alphas_Test_short)) # Initialize results array
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
@@ -37,7 +38,7 @@ for (coef in coefficients_cont){
       pval_norm_iid <- foreach(i = 1:MC, .combine = 'c') %dopar% {
         set.seed(i)
         XY <- Gen_MvN_iid(Ti, alpha, i)
-        RCor::RCor(XY[,1], XY[,2], method = coef, IID = TRUE, Fisher = FALSE, Inference = TRUE)[[4]]
+        RCor::RCor(XY[,1], XY[,2], method = coef, IID = TRUE, Fisher = FALSE, Inference = TRUE)[[5]]
       }
       pval_array_norm_iid[coef,as.character(Ti),,as.character(alpha)] <- pval_norm_iid
     }
@@ -57,7 +58,7 @@ for (coef in coefficients_cont){
       pval_t4_iid <- foreach(i = 1:MC, .combine = 'c') %dopar% {
         set.seed(i)
         XY <- Gen_Mvt_iid(Ti, alpha, i, 4)
-        RCor::RCor(XY[,1], XY[,2], method = coef, IID = TRUE, Fisher = FALSE, Inference = TRUE)[[4]]
+        RCor::RCor(XY[,1], XY[,2], method = coef, IID = TRUE, Fisher = FALSE, Inference = TRUE)[[5]]
       }
       pval_array_t4_iid[coef,as.character(Ti),,as.character(alpha)] <- pval_t4_iid
     }
@@ -77,7 +78,7 @@ for (coef in coefficients_cont){
       pval_t1_iid <- foreach(i = 1:MC, .combine = 'c') %dopar% {
         set.seed(i)
         XY <- Gen_Mvt_iid(Ti, alpha, i, 1)
-        RCor::RCor(XY[,1], XY[,2], method = coef, IID = TRUE, Fisher = FALSE, Inference = TRUE)[[4]]
+        RCor::RCor(XY[,1], XY[,2], method = coef, IID = TRUE, Fisher = FALSE, Inference = TRUE)[[5]]
       }
       pval_array_t1_iid[coef,as.character(Ti),,as.character(alpha)] <- pval_t1_iid
     }
@@ -97,7 +98,7 @@ for (coef in coefficients_cont){
       pval_Nexp_iid <- foreach(i = 1:MC, .combine = 'c') %dopar% {
         set.seed(i)
         XY <- Gen_NExp_iid(Ti, alpha, i)
-        RCor::RCor(XY[,1], XY[,2], method = coef, IID = TRUE, Fisher = FALSE, Inference = TRUE)[[4]]
+        RCor::RCor(XY[,1], XY[,2], method = coef, IID = TRUE, Fisher = FALSE, Inference = TRUE)[[5]]
       }
       pval_array_Nexp_iid[coef,as.character(Ti),,as.character(alpha)] <- pval_Nexp_iid
     }
@@ -108,6 +109,7 @@ save(pval_array_Nexp_iid, file = here("results/simulations/size_power/pval_Nexp_
 
 # Discrete IID Processes ------------------------------------------------
 ## "Multivariate Poisson" DGP (iid) -------------------------------------------------
+# alphas_Test <- seq(from = 0, to = 0.99, by = 0.01)
 alphas_Test_short <- c(0, 0.04, 0.09)
 pval_array_MvPois_iid <- array(data = NA, dim = c(length(coefficients_disc), length(SampleSizes), MC, length(alphas_Test_short)), dimnames = list(coefficients_disc, SampleSizes, 1:MC, alphas_Test_short)) # Initialize results array
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
@@ -118,7 +120,7 @@ for (coef in coefficients_disc){
       pval_MvPois_iid <- foreach(i = 1:MC, .combine = 'c') %dopar% {
         set.seed(i)
         XY <- Gen_MvPois_iid(Ti, alpha, i)
-        RCor::RCor(XY[,1], XY[,2], method = coef, IID = TRUE, Fisher = FALSE, Inference = TRUE)[[4]]
+        RCor::RCor(XY[,1], XY[,2], method = coef, IID = TRUE, Fisher = FALSE, Inference = TRUE)[[5]]
       }
       pval_array_MvPois_iid[coef,as.character(Ti),,as.character(alpha)] <- pval_MvPois_iid
     }
@@ -138,7 +140,7 @@ for (coef in coefficients_disc){
       pval_MvZipf_iid <- foreach(i = 1:MC, .combine = 'c') %dopar% {
         set.seed(i)
         XY <- Gen_MvZipf_iid(Ti, alpha, i)
-        RCor::RCor(XY[,1], XY[,2], method = coef, IID = TRUE, Fisher = FALSE, Inference = TRUE)[[4]]
+        RCor::RCor(XY[,1], XY[,2], method = coef, IID = TRUE, Fisher = FALSE, Inference = TRUE)[[5]]
       }
       pval_array_MvZipf_iid[coef,as.character(Ti),,as.character(alpha)] <- pval_MvZipf_iid
     }
@@ -158,7 +160,7 @@ for (coef in coefficients_disc){
       pval_MvSkellam_iid <- foreach(i = 1:MC, .combine = 'c') %dopar% {
         set.seed(i)
         XY <- Gen_MvSkellam_iid(Ti, alpha, i)
-        RCor::RCor(XY[,1], XY[,2], method = coef, IID = TRUE, Fisher = FALSE, Inference = TRUE)[[4]]
+        RCor::RCor(XY[,1], XY[,2], method = coef, IID = TRUE, Fisher = FALSE, Inference = TRUE)[[5]]
       }
       pval_array_MvSkellam_iid[coef,as.character(Ti),,as.character(alpha)] <- pval_MvSkellam_iid
     }
@@ -169,6 +171,7 @@ save(pval_array_MvSkellam_iid, file = here("results/simulations/size_power/pval_
 
 # Continuous Time Series Processes ------------------------------------------------
 ## "Multivariate Normal" DGP (Time Series) -------------------------------------------------
+# alphas_Test <- seq(from = -0.99, to = 0.99, by = 0.01)
 alphas_Test_short <- c(-0.16, -0.08, 0, 0.08, 0.16)
 pval_array_MvNorm_TS <- array(data = NA, dim = c(length(coefficients_cont), length(SampleSizes), MC, length(alphas_Test_short)), dimnames = list(coefficients_cont, SampleSizes, 1:MC, alphas_Test_short)) # Initialize results array
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
@@ -179,7 +182,7 @@ for (coef in coefficients_cont){
       pval_MvNorm_TS <- foreach(i = 1:MC, .combine = 'c') %dopar% {
         set.seed(i)
         XY <- Gen_Mvt_TS(Ti, alpha, i, Inf)
-        RCor::RCor(XY[,1], XY[,2], method = coef, IID = FALSE, Fisher = FALSE, Inference = TRUE)[[4]]
+        RCor::RCor(XY[,1], XY[,2], method = coef, IID = FALSE, Fisher = FALSE, Inference = TRUE)[[5]]
       }
       pval_array_MvNorm_TS[coef,as.character(Ti),,as.character(alpha)] <- pval_MvNorm_TS
     }
@@ -199,7 +202,7 @@ for (coef in coefficients_cont){
       pval_t4_TS <- foreach(i = 1:MC, .combine = 'c') %dopar% {
         set.seed(i)
         XY <- Gen_Mvt_TS(Ti, alpha, i, 4)
-        RCor::RCor(XY[,1], XY[,2], method = coef, IID = FALSE, Fisher = FALSE, Inference = TRUE)[[4]]
+        RCor::RCor(XY[,1], XY[,2], method = coef, IID = FALSE, Fisher = FALSE, Inference = TRUE)[[5]]
       }
       pval_array_t4_TS[coef,as.character(Ti),,as.character(alpha)] <- pval_t4_TS
     }
@@ -219,7 +222,7 @@ for (coef in coefficients_cont){
       pval_t1_TS <- foreach(i = 1:MC, .combine = 'c') %dopar% {
         set.seed(i)
         XY <- Gen_Mvt_TS(Ti, alpha, i, 1)
-        RCor::RCor(XY[,1], XY[,2], method = coef, IID = FALSE, Fisher = FALSE, Inference = TRUE)[[4]]
+        RCor::RCor(XY[,1], XY[,2], method = coef, IID = FALSE, Fisher = FALSE, Inference = TRUE)[[5]]
       }
       pval_array_t1_TS[coef,as.character(Ti),,as.character(alpha)] <- pval_t1_TS
     }
@@ -239,7 +242,7 @@ for (coef in coefficients_cont){
       pval_TEAR_TS <- foreach(i = 1:MC, .combine = 'c') %dopar% {
         set.seed(i)
         XY <- Gen_TEAR_TS(Ti, alpha, i)
-        RCor::RCor(XY[,1], XY[,2], method = coef, IID = FALSE, Fisher = FALSE, Inference = TRUE)[[4]]
+        RCor::RCor(XY[,1], XY[,2], method = coef, IID = FALSE, Fisher = FALSE, Inference = TRUE)[[5]]
       }
       pval_array_TEAR_TS[coef,as.character(Ti),,as.character(alpha)] <- pval_TEAR_TS
     }
@@ -250,6 +253,7 @@ save(pval_array_TEAR_TS, file = here("results/simulations/size_power/pval_TEAR_T
 
 # Discrete Time Series Processes ------------------------------------------------
 ## "Multivariate Poisson" DGP (Time Series) -------------------------------------------------
+# alphas_Test <- seq(from = 0, to = 0.99, by = 0.01)
 alphas_Test_short <- c(0, 0.04, 0.085)
 pval_array_MvPois_TS <- array(data = NA, dim = c(length(coefficients_disc), length(SampleSizes), MC, length(alphas_Test_short)), dimnames = list(coefficients_disc, SampleSizes, 1:MC, alphas_Test_short)) # Initialize results array
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
@@ -260,7 +264,7 @@ for (coef in coefficients_disc){
       pval_MvPois_TS <- foreach(i = 1:MC, .combine = 'c') %dopar% {
         set.seed(i)
         XY <- Gen_MvPois_TS(Ti, alpha, i)
-        RCor::RCor(XY[,1], XY[,2], method = coef, IID = FALSE, Fisher = FALSE, Inference = TRUE)[[4]]
+        RCor::RCor(XY[,1], XY[,2], method = coef, IID = FALSE, Fisher = FALSE, Inference = TRUE)[[5]]
       }
       pval_array_MvPois_TS[coef,as.character(Ti),,as.character(alpha)] <- pval_MvPois_TS
     }
@@ -280,7 +284,7 @@ for (coef in coefficients_disc){
       pval_MvZipf_TS <- foreach(i = 1:MC, .combine = 'c') %dopar% {
         set.seed(i)
         XY <- Gen_MvZipf_TS(Ti, alpha, i)
-        RCor::RCor(XY[,1], XY[,2], method = coef, IID = FALSE, Fisher = FALSE, Inference = TRUE)[[4]]
+        RCor::RCor(XY[,1], XY[,2], method = coef, IID = FALSE, Fisher = FALSE, Inference = TRUE)[[5]]
       }
       pval_array_MvZipf_TS[coef,as.character(Ti),,as.character(alpha)] <- pval_MvZipf_TS
     }
@@ -300,7 +304,7 @@ for (coef in coefficients_disc){
       pval_MvSkellam_TS <- foreach(i = 1:MC, .combine = 'c') %dopar% {
         set.seed(i)
         XY <- Gen_MvSkellam_TS(Ti, alpha, i)
-        RCor::RCor(XY[,1], XY[,2], method = coef, IID = FALSE, Fisher = FALSE, Inference = TRUE)[[4]]
+        RCor::RCor(XY[,1], XY[,2], method = coef, IID = FALSE, Fisher = FALSE, Inference = TRUE)[[5]]
       }
       pval_array_MvSkellam_TS[coef,as.character(Ti),,as.character(alpha)] <- pval_MvSkellam_TS
     }

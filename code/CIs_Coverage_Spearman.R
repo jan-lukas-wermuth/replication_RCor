@@ -105,7 +105,7 @@ stopCluster(cl)
 save(decision_spearman_array_t4_iid_fis, file = here("results/simulations/coverages/spearman/rho_cov_t4_iid_fis.RData"))
 
 ## "Multivariate t(1)" DGP (iid) -------------------------------------------------
-alphas_CIs_short <- c(-0.985, -0.52, 0, 0.52, 0.985)
+alphas_CIs_short <- c(-0.92, -0.31, 0, 0.31, 0.92)
 decision_spearman_array_t1_iid <- array(data = NA, dim = c(length(SampleSizes), MC, length(alphas_CIs_short)), dimnames = list(SampleSizes, 1:MC, alphas_CIs_short)) # Initialize results array
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)
@@ -143,7 +143,7 @@ stopCluster(cl)
 save(decision_spearman_array_t1_iid_fis, file = here("results/simulations/coverages/spearman/rho_cov_t1_iid_fis.RData"))
 
 ## Normal Exponential DGP (iid) -------------------------------------------------
-alphas_CIs_short <- c(-0.95, -0.59, 0, 0.59, 0.95)
+alphas_CIs_short <- c(-0.81, -0.42, 0, 0.42, 0.81)
 decision_spearman_array_NExp_iid <- array(data = NA, dim = c(length(SampleSizes), MC, length(alphas_CIs_short)), dimnames = list(SampleSizes, 1:MC, alphas_CIs_short)) # Initialize results array
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)
@@ -182,7 +182,7 @@ save(decision_spearman_array_NExp_iid_fis, file = here("results/simulations/cove
 
 # Discrete IID Processes ------------------------------------------------
 ## "Multivariate Poisson" DGP (iid) -------------------------------------------------
-alphas_CIs_short <- c(0, 0.34, 0.69)
+alphas_CIs_short <- c(0, 0.42, 0.81)
 decision_spearman_array_MvPois_iid <- array(data = NA, dim = c(length(SampleSizes), MC, length(alphas_CIs_short)), dimnames = list(SampleSizes, 1:MC, alphas_CIs_short)) # Initialize results array
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)
@@ -193,7 +193,7 @@ for (j in seq_along(alphas_CIs_short)){
       set.seed(i)
       XY <- Gen_MvPois_iid(Ti, alpha, i)
       spearman <- RCor::RCor(XY[,1], XY[,2], method = "rho_b", IID = TRUE, Fisher = FALSE, Inference = TRUE)
-      as.numeric(data.table::between(rho_bs_MvPois_iid_CIs_short[j], spearman[[2]], spearman[[3]]))
+      as.numeric(data.table::between(rhobs_MvPois_iid_CIs_short[j], spearman[[2]], spearman[[3]]))
     }
     decision_spearman_array_MvPois_iid[as.character(Ti),,as.character(alpha)] <- decision_spearman_MvPois_iid
   }
@@ -211,7 +211,7 @@ for (j in seq_along(alphas_CIs_short)){
       set.seed(i)
       XY <- Gen_MvPois_iid(Ti, alpha, i)
       spearman <- RCor::RCor(XY[,1], XY[,2], method = "rho_b", IID = TRUE, Fisher = TRUE, Inference = TRUE)
-      as.numeric(data.table::between(rho_bs_MvPois_iid_CIs_short[j], spearman[[2]], spearman[[3]]))
+      as.numeric(data.table::between(rhobs_MvPois_iid_CIs_short[j], spearman[[2]], spearman[[3]]))
     }
     decision_spearman_array_MvPois_iid_fis[as.character(Ti),,as.character(alpha)] <- decision_spearman_MvPois_iid_fis
   }
@@ -220,7 +220,7 @@ stopCluster(cl)
 save(decision_spearman_array_MvPois_iid_fis, file = here("results/simulations/coverages/spearman/rho_b_cov_MvPois_iid_fis.RData"))
 
 ## "Multivariate Zipf" DGP (iid) -------------------------------------------------
-alphas_CIs_short <- c(0, 0.174, 0.677)
+alphas_CIs_short <- c(0, 0.255, 0.815)
 decision_spearman_array_MvZipf_iid <- array(data = NA, dim = c(length(SampleSizes), MC, length(alphas_CIs_short)), dimnames = list(SampleSizes, 1:MC, alphas_CIs_short)) # Initialize results array
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)
@@ -231,7 +231,7 @@ for (j in seq_along(alphas_CIs_short)){
       set.seed(i)
       XY <- Gen_MvZipf_iid(Ti, alpha, i)
       spearman <- RCor::RCor(XY[,1], XY[,2], method = "rho_b", IID = TRUE, Fisher = FALSE, Inference = TRUE)
-      as.numeric(data.table::between(rho_bs_MvZipf_iid_CIs_short[j], spearman[[2]], spearman[[3]]))
+      as.numeric(data.table::between(rhobs_MvZipf_iid_CIs_short[j], spearman[[2]], spearman[[3]]))
     }
     decision_spearman_array_MvZipf_iid[as.character(Ti),,as.character(alpha)] <- decision_spearman_MvZipf_iid
   }
@@ -249,7 +249,7 @@ for (j in seq_along(alphas_CIs_short)){
       set.seed(i)
       XY <- Gen_MvZipf_iid(Ti, alpha, i)
       spearman <- RCor::RCor(XY[,1], XY[,2], method = "rho_b", IID = TRUE, Fisher = TRUE, Inference = TRUE)
-      as.numeric(data.table::between(rho_bs_MvZipf_iid_CIs_short[j], spearman[[2]], spearman[[3]]))
+      as.numeric(data.table::between(rhobs_MvZipf_iid_CIs_short[j], spearman[[2]], spearman[[3]]))
     }
     decision_spearman_array_MvZipf_iid_fis[as.character(Ti),,as.character(alpha)] <- decision_spearman_MvZipf_iid_fis
   }
@@ -258,7 +258,7 @@ stopCluster(cl)
 save(decision_spearman_array_MvZipf_iid_fis, file = here("results/simulations/coverages/spearman/rho_b_cov_MvZipf_iid_fis.RData"))
 
 ## "Multivariate Skellam" DGP (iid) -------------------------------------------------
-alphas_CIs_short <- c(-0.665, -0.345, 0, 0.345, 0.665)
+alphas_CIs_short <- c(-0.728, -0.365, 0, 0.365, 0.728)
 decision_spearman_array_MvSkellam_iid <- array(data = NA, dim = c(length(SampleSizes), MC, length(alphas_CIs_short)), dimnames = list(SampleSizes, 1:MC, alphas_CIs_short)) # Initialize results array
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)
@@ -269,7 +269,7 @@ for (j in seq_along(alphas_CIs_short)){
       set.seed(i)
       XY <- Gen_MvSkellam_iid(Ti, alpha, i)
       spearman <- RCor::RCor(XY[,1], XY[,2], method = "rho_b", IID = TRUE, Fisher = FALSE, Inference = TRUE)
-      as.numeric(data.table::between(rho_bs_MvSkellam_iid_CIs_short[j], spearman[[2]], spearman[[3]]))
+      as.numeric(data.table::between(rhobs_MvSkellam_iid_CIs_short[j], spearman[[2]], spearman[[3]]))
     }
     decision_spearman_array_MvSkellam_iid[as.character(Ti),,as.character(alpha)] <- decision_spearman_MvSkellam_iid
   }
@@ -287,7 +287,7 @@ for (j in seq_along(alphas_CIs_short)){
       set.seed(i)
       XY <- Gen_MvSkellam_iid(Ti, alpha, i)
       spearman <- RCor::RCor(XY[,1], XY[,2], method = "rho_b", IID = TRUE, Fisher = TRUE, Inference = TRUE)
-      as.numeric(data.table::between(rho_bs_MvSkellam_iid_CIs_short[j], spearman[[2]], spearman[[3]]))
+      as.numeric(data.table::between(rhobs_MvSkellam_iid_CIs_short[j], spearman[[2]], spearman[[3]]))
     }
     decision_spearman_array_MvSkellam_iid_fis[as.character(Ti),,as.character(alpha)] <- decision_spearman_MvSkellam_iid_fis
   }
@@ -297,7 +297,7 @@ save(decision_spearman_array_MvSkellam_iid_fis, file = here("results/simulations
 
 # Continuous Time Series Processes ------------------------------------------------
 ## "Multivariate Normal" DGP (Time Series) -------------------------------------------------
-alphas_CIs_short <- c(-0.95, -0.59, 0, 0.59, 0.95)
+alphas_CIs_short <- c(-0.815, -0.42, 0, 0.42, 0.815)
 decision_spearman_array_norm_TS <- array(data = NA, dim = c(length(SampleSizes), MC, length(alphas_CIs_short)), dimnames = list(SampleSizes, 1:MC, alphas_CIs_short)) # Initialize results array
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)
@@ -335,7 +335,7 @@ stopCluster(cl)
 save(decision_spearman_array_norm_TS_fis, file = here("results/simulations/coverages/spearman/rho_cov_norm_TS_fis.RData"))
 
 ## "Multivariate t(4)" DGP (Time Series) -------------------------------------------------
-alphas_CIs_short <- c(-0.96, -0.58, 0, 0.58, 0.96)
+alphas_CIs_short <- c(-0.82, -0.41, 0, 0.41, 0.82)
 decision_spearman_array_t4_TS <- array(data = NA, dim = c(length(SampleSizes), MC, length(alphas_CIs_short)), dimnames = list(SampleSizes, 1:MC, alphas_CIs_short)) # Initialize results array
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)
@@ -373,7 +373,7 @@ stopCluster(cl)
 save(decision_spearman_array_t4_TS_fis, file = here("results/simulations/coverages/spearman/rho_cov_t4_TS_fis.RData"))
 
 ## "Multivariate t(1)" DGP (Time Series) -------------------------------------------------
-alphas_CIs_short <- c(-0.985, -0.51, 0, 0.51, 0.985)
+alphas_CIs_short <- c(-0.915, -0.305, 0, 0.305, 0.915)
 decision_spearman_array_t1_TS <- array(data = NA, dim = c(length(SampleSizes), MC, length(alphas_CIs_short)), dimnames = list(SampleSizes, 1:MC, alphas_CIs_short)) # Initialize results array
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)
@@ -411,7 +411,7 @@ stopCluster(cl)
 save(decision_spearman_array_t1_TS_fis, file = here("results/simulations/coverages/spearman/rho_cov_t1_TS_fis.RData"))
 
 ## "Multivariate TEAR(1)" DGP (Time Series) -------------------------------------------------
-alphas_CIs_short <- c(0, 0.48, 0.845)
+alphas_CIs_short <- c(0, 0.4, 0.8)
 decision_spearman_array_TEAR_TS <- array(data = NA, dim = c(length(SampleSizes), MC, length(alphas_CIs_short)), dimnames = list(SampleSizes, 1:MC, alphas_CIs_short)) # Initialize results array
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)
@@ -450,7 +450,7 @@ save(decision_spearman_array_TEAR_TS_fis, file = here("results/simulations/cover
 
 # Discrete Time Series Processes ------------------------------------------------
 ## "Multivariate Poisson" DGP (Time Series) -------------------------------------------------
-alphas_CIs_short <- c(0, 0.34, 0.69)
+alphas_CIs_short <- c(0, 0.42, 0.813)
 decision_spearman_array_MvPois_TS <- array(data = NA, dim = c(length(SampleSizes), MC, length(alphas_CIs_short)), dimnames = list(SampleSizes, 1:MC, alphas_CIs_short)) # Initialize results array
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)
@@ -488,7 +488,9 @@ stopCluster(cl)
 save(decision_spearman_array_MvPois_TS_fis, file = here("results/simulations/coverages/spearman/rho_b_cov_MvPois_TS_fis.RData"))
 
 ## "Multivariate Zipf" DGP (Time Series) -------------------------------------------------
-alphas_CIs_short <- c(0, 0.46, 0.865)
+# Parallelization was only possible with MC <= 11, which is the number of cores over which
+# I could parallelize. I had to combine the arrays afterwards using abind()
+alphas_CIs_short <- c(0, 0.37, 0.81)
 decision_spearman_array_MvZipf_TS <- array(data = NA, dim = c(length(SampleSizes), MC, length(alphas_CIs_short)), dimnames = list(SampleSizes, 1:MC, alphas_CIs_short)) # Initialize results array
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)
@@ -526,7 +528,9 @@ stopCluster(cl)
 save(decision_spearman_array_MvZipf_TS_fis, file = here("results/simulations/coverages/spearman/rho_b_cov_MvZipf_TS_fis.RData"))
 
 ## "Multivariate Skellam" DGP (Time Series) -------------------------------------------------
-alphas_CIs_short <- c(-0.65, -0.33, 0, 0.33, 0.65)
+# Parallelization was only possible with MC <= 11, which is the number of cores over which
+# I could parallelize. I had to combine the arrays afterwards using abind()
+alphas_CIs_short <- c(-0.745, -0.37, 0, 0.37, 0.745)
 decision_spearman_array_MvSkellam_TS <- array(data = NA, dim = c(length(SampleSizes), MC, length(alphas_CIs_short)), dimnames = list(SampleSizes, 1:MC, alphas_CIs_short)) # Initialize results array
 cl <- makeCluster(detectCores() - 1, type = "PSOCK")
 registerDoParallel(cl)

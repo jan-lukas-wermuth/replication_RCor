@@ -63,6 +63,9 @@ in the folder.
 - Coverage_plots.R: This file uses the raw empirical coverage rates and
   produces plots.
 
+- SizePower_plots.R: This file uses the raw size and power values and
+  produces plots.
+
 - Applications.R: This file contains the data for both applications. It
   also includes the computation of all relevant correlation coefficients
   together with their confidence intervals and p-values for the
