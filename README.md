@@ -33,6 +33,10 @@ This folder contains the `R` scripts that are needed to calculate all
 the results in the paper. I give a short overview over the several files
 in the folder.
 
+- BGeom_plots.R: This file creates the tie probability and asymptotic
+  variance plots for the example with the bivariate geometric
+  distribution.
+
 - True_Taus.R: This file simulates the values for $\tau$ for each
   continuous DGP that is described in the paper and a grid of dependence
   parameters $\alpha$. For the discrete DGPs, the attainable

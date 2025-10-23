@@ -39,6 +39,8 @@ It may be necessary to install further packages from [CRAN](https://cran.r-proje
 ## code
 This folder contains the `R` scripts that are needed to calculate all the results in the paper. I give a short overview over the several files in the folder.
 
+- BGeom_plots.R: This file creates the tie probability and asymptotic variance plots for the example with the bivariate geometric distribution.
+
 - True_Taus.R: This file simulates the values for $\tau$ for each continuous DGP that is described in the paper and a grid of dependence parameters $\alpha$. For the discrete DGPs, the attainable generalization $\gamma$ is computed. The $\alpha$-grid is chosen such that coverage plots (with alphas_CIs) and coverage tables (with alphas_CIs_short) can be computed. alphas_PowerGraph is needed for the power plots because their x-axis features $\gamma$ (which is equivalent to $\tau$ in the continuous case) and not $\alpha$, the parameter used in the simulations.
 
 - True_Rhos.R: This script performs computations similar to True_Taus.R, where $\rho$ replaces $\tau$ and $\rho_b$ replaces $\gamma$. Since the power plots use $\gamma$ as their dependence measure, only alphas_CIs and alphas_CIs_short is needed.
